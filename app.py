@@ -115,12 +115,13 @@ LANDING_HTML = """<!DOCTYPE html>
   <div class="wrap">
     <header>
       <h1>Doppl Fusion Demo</h1>
-      <p>Panel → fusion judge → decision → critic → loop. Vague prompts work best.</p>
+      <p>Parent agenomes → judge → critic → breed child on blind spots. Vague prompts work best.</p>
       <div class="pipeline">
-        <span>Panel</span><span class="arrow">→</span>
+        <span>Parents</span><span class="arrow">→</span>
         <span>Judge</span><span class="arrow">→</span>
-        <span>Decision</span><span class="arrow">→</span>
-        <span>Critic</span><span class="arrow">↻</span>
+        <span>Critic</span><span class="arrow">→</span>
+        <span>Breed</span><span class="arrow">→</span>
+        <span>Offspring</span>
       </div>
     </header>
     <form id="run-form" method="post" action="/run">
@@ -134,7 +135,7 @@ LANDING_HTML = """<!DOCTYPE html>
         <button type="submit">Run fusion</button>
       </div>
       <p class="loading">Running panel + judge + critic… this usually takes 1–3 minutes.</p>
-      <p class="hint">Default prompt is vague on purpose so Gen 1 usually fails and Gen 2 improves.</p>
+      <p class="hint">Default prompt is vague on purpose so Gen 1 usually fails and a bred offspring runs in Gen 2.</p>
     </form>
   </div>
   <script>

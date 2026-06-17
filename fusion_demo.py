@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Minimal OpenRouter Fusion demo with critic loop.
+OpenRouter Fusion demo with agenome breeding.
 
-Pipeline per round:
-  panel (2 models) → fusion judge → final answer → critic (score + clarifying questions)
-If the critic rejects, the next round gets the feedback injected and fusion runs again.
+Gen 1: two Rule-of-Cool parent agenomes → fusion judge → decision → critic.
+On critic fail: breed a child agenome on blind spots (not prompt retry).
+Gen 2+: child agenome answers directly, critic again.
 
 Use --html to write a self-contained trace page for live demo / projector.
 """
@@ -27,6 +27,15 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.syntax import Syntax
 
+from agenome import (
+    Agenome,
+    agenome_panel_entry,
+    breed_child,
+    default_parent_pair,
+    format_lineage_json,
+    lineage_record,
+    run_agenome,
+)
 from fusion_common import panel_to_trace, parse_json_response
 from html_trace import write_trace_html
 
@@ -150,30 +159,33 @@ def chat(
     return data["choices"][0]["message"]["content"]
 
 
-def run_panel(client: httpx.Client, prompt: str) -> list[tuple[str, str]]:
-    def ask(model: str) -> tuple[str, str]:
-        content = chat(
-            client,
-            model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Answer directly and practically. If the prompt is ambiguous, say what you're assuming.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-        )
-        return model, content
+def run_agenome_panel(
+    client: httpx.Client,
+    prompt: str,
+    parents: tuple[Agenome, Agenome],
+) -> tuple[list[dict[str, Any]], tuple[Agenome, Agenome]]:
+    parent_a, parent_b = parents
 
-    results: list[tuple[str, str]] = []
-    with ThreadPoolExecutor(max_workers=len(PANEL_MODELS)) as pool:
-        futures = {pool.submit(ask, m): m for m in PANEL_MODELS}
+    def ask(genome: Agenome) -> dict[str, Any]:
+        answer = run_agenome(chat, client, genome, prompt)
+        return agenome_panel_entry(genome, answer)
+
+    results: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = {pool.submit(ask, g): g for g in (parent_a, parent_b)}
         for future in as_completed(futures):
             results.append(future.result())
 
-    order = {m: i for i, m in enumerate(PANEL_MODELS)}
-    results.sort(key=lambda pair: order.get(pair[0], 99))
-    return results
+    order = {parent_a.id: 0, parent_b.id: 1}
+    results.sort(key=lambda entry: order.get(str(entry.get("agenome_id")), 99))
+    return results, (parent_a, parent_b)
+
+
+def panel_for_judge(panel: list[dict[str, Any]]) -> list[tuple[str, str]]:
+    return [
+        (str(entry.get("label") or entry.get("model", "Model")), str(entry.get("answer", "")))
+        for entry in panel
+    ]
 
 
 def run_judge(client: httpx.Client, prompt: str, panel: list[tuple[str, str]]) -> dict[str, Any]:
@@ -246,47 +258,25 @@ def critic_passes(critic: dict[str, Any]) -> bool:
     return False
 
 
-def build_next_prompt(original: str, final: str, critic: dict[str, Any], round_num: int) -> str:
-    weaknesses = critic.get("weaknesses") or []
-    questions = critic.get("clarifying_questions") or []
-    fix = critic.get("what_would_make_this_pass", "")
-
-    weakness_block = "\n".join(f"- {w}" for w in weaknesses) or "- (none listed)"
-    question_block = "\n".join(f"- {q}" for q in questions) or "- (none listed)"
-
-    return f"""{original}
-
----
-GENERATION {round_num} — CRITIC FEEDBACK (revise your recommendation):
-
-Previous answer:
-{final}
-
-Weaknesses the critic found:
-{weakness_block}
-
-Clarifying questions you must address explicitly (state your assumptions):
-{question_block}
-
-What would make this pass: {fix}
-
-Revise: pick ONE direction, state what room/use-case you're assuming, and keep it shippable in 2 weeks."""
-
-
 def run_fusion_round(
     client: httpx.Client,
     *,
     original_prompt: str,
     round_prompt: str,
     round_num: int,
+    parents: tuple[Agenome, Agenome] | None = None,
 ) -> dict[str, Any]:
-    console.rule(f"[bold cyan]Round {round_num} — Step 1: Panel[/bold cyan]")
-    panel = run_panel(client, round_prompt)
-    for model, answer in panel:
-        console.print(Panel(answer, title=f"[green]{model.split('/')[-1]}[/green]", border_style="green"))
+    if parents is None:
+        parents = default_parent_pair()
+
+    console.rule(f"[bold cyan]Round {round_num} — Step 1: Parent agenomes[/bold cyan]")
+    panel, parent_pair = run_agenome_panel(client, round_prompt, parents)
+    for entry in panel:
+        label = str(entry.get("label", "Parent"))
+        console.print(Panel(str(entry.get("answer", "")), title=f"[green]{label}[/green]", border_style="green"))
 
     console.rule(f"[bold cyan]Round {round_num} — Step 2: Fusion judge[/bold cyan]")
-    analysis = run_judge(client, round_prompt, panel)
+    analysis = run_judge(client, round_prompt, panel_for_judge(panel))
     console.print(Syntax(json.dumps(analysis, indent=2), "json", theme="monokai", line_numbers=False))
 
     console.rule(f"[bold cyan]Round {round_num} — Step 3: Decision[/bold cyan]")
@@ -318,9 +308,63 @@ def run_fusion_round(
 
     return {
         "round": round_num,
+        "mode": "fusion",
         "prompt_used": round_prompt,
         "panel": panel_to_trace(panel),
+        "parents": [g.to_dict() for g in parent_pair],
         "analysis": analysis,
+        "final": final,
+        "critic": critic,
+        "passed": passed,
+    }
+
+
+def run_offspring_round(
+    client: httpx.Client,
+    *,
+    original_prompt: str,
+    child: Agenome,
+    round_num: int,
+    lineage: dict[str, Any],
+) -> dict[str, Any]:
+    console.rule(f"[bold magenta]Round {round_num} — Breeding event[/bold magenta]")
+    console.print(Syntax(format_lineage_json(lineage), "json", theme="monokai", line_numbers=False))
+
+    console.rule(f"[bold cyan]Round {round_num} — Child agenome answers[/bold cyan]")
+    console.print(Panel(child.name, title="[bold]Offspring[/bold]", border_style="magenta"))
+    final = run_agenome(chat, client, child, original_prompt)
+    console.print(Panel(final, title="[bold white]Decision[/bold white]", border_style="cyan"))
+
+    console.rule(f"[bold red]Round {round_num} — Critic[/bold red]")
+    critic = run_critic(
+        client,
+        original_prompt=original_prompt,
+        round_prompt=original_prompt,
+        analysis={"blind_spots": child.primary_mandate, "offspring_mandate": True},
+        final=final,
+        round_num=round_num,
+    )
+    console.print(Syntax(json.dumps(critic, indent=2), "json", theme="monokai", line_numbers=False))
+
+    passed = critic_passes(critic)
+    verdict = critic.get("verdict", "?")
+    score = critic.get("score", "?")
+    if passed:
+        console.print(f"[bold green]Critic: PASS[/bold green] (score {score})")
+    else:
+        console.print(f"[bold yellow]Critic: NEEDS REVISION[/bold yellow] (score {score}, verdict {verdict})")
+
+    return {
+        "round": round_num,
+        "mode": "offspring",
+        "prompt_used": original_prompt,
+        "lineage": lineage,
+        "offspring": {
+            "agenome": child.to_dict(),
+            "answer": final,
+        },
+        "panel": [],
+        "analysis": {"primary_mandate": child.primary_mandate},
         "final": final,
         "critic": critic,
         "passed": passed,
@@ -329,28 +373,55 @@ def run_fusion_round(
 
 def run_loop(client: httpx.Client, prompt: str, max_rounds: int) -> dict[str, Any]:
     rounds: list[dict[str, Any]] = []
-    round_prompt = prompt
+    parents = default_parent_pair()
+    child: Agenome | None = None
+    lineage: dict[str, Any] | None = None
 
     for n in range(1, max_rounds + 1):
         if n > 1:
             console.print()
-            console.rule(f"[bold magenta]↻ Loop — generation {n}[/bold magenta]")
+            console.rule(f"[bold magenta]↻ Generation {n} — offspring run[/bold magenta]")
 
-        round_data = run_fusion_round(
-            client,
-            original_prompt=prompt,
-            round_prompt=round_prompt,
-            round_num=n,
-        )
+        if n == 1 or child is None:
+            round_data = run_fusion_round(
+                client,
+                original_prompt=prompt,
+                round_prompt=prompt,
+                round_num=n,
+                parents=parents,
+            )
+        else:
+            round_data = run_offspring_round(
+                client,
+                original_prompt=prompt,
+                child=child,
+                round_num=n,
+                lineage=lineage or {},
+            )
+
         rounds.append(round_data)
 
         if round_data["passed"]:
             console.print(f"\n[green]Stopping — critic passed at round {n}[/green]")
             break
 
-        if n < max_rounds:
-            round_prompt = build_next_prompt(prompt, round_data["final"], round_data["critic"], n)
-            console.print(f"\n[dim]Feeding critic feedback into round {n + 1}…[/dim]")
+        if n < max_rounds and round_data.get("mode") == "fusion":
+            parent_a, parent_b = parents
+            child, mandate = breed_child(
+                parent_a,
+                parent_b,
+                round_data["analysis"],
+                round_data["critic"],
+                child_generation=n + 1,
+            )
+            lineage = lineage_record(parent_a, parent_b, child, mandate)
+            console.print(
+                f"\n[dim]Bred child agenome [bold]{child.name}[/bold] "
+                f"on {len(mandate)} blind-spot mandate(s)…[/dim]"
+            )
+        elif n < max_rounds:
+            console.print(f"\n[yellow]Offspring still failed — no further breeding in this demo[/yellow]")
+            break
         else:
             console.print(f"\n[yellow]Max rounds ({max_rounds}) reached — shipping best attempt[/yellow]")
 
@@ -358,12 +429,13 @@ def run_loop(client: httpx.Client, prompt: str, max_rounds: int) -> dict[str, An
     return {
         "prompt": prompt,
         "rounds": rounds,
-        "panel": last["panel"],
-        "analysis": last["analysis"],
-        "final": last["final"],
-        "critic": last["critic"],
+        "lineage": lineage,
+        "panel": last.get("panel") or [],
+        "analysis": last.get("analysis") or {},
+        "final": last.get("final", ""),
+        "critic": last.get("critic") or {},
         "total_rounds": len(rounds),
-        "passed": last["passed"],
+        "passed": last.get("passed", False),
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     }
 

@@ -35,12 +35,17 @@ def _panel_cards(panel: list[dict[str, str]]) -> str:
     for i, entry in enumerate(panel):
         label = entry.get("label") or entry.get("model", f"Model {i + 1}")
         answer = entry.get("answer", "")
+        agenome_id = entry.get("agenome_id")
+        badge = "Agenome" if agenome_id else "Panel"
+        badge_class = "badge-agenome" if agenome_id else "badge-panel"
+        sub = f'<span class="agenome-id">{_esc(str(agenome_id))}</span>' if agenome_id else ""
         cards.append(
             f"""
             <article class="panel-card" style="--delay: {i}">
               <header>
-                <span class="badge badge-panel">Panel</span>
+                <span class="badge {badge_class}">{badge}</span>
                 <h3>{_esc(label)}</h3>
+                {sub}
               </header>
               <div class="body">{_esc(answer)}</div>
             </article>
@@ -139,6 +144,67 @@ def _judge_section(analysis: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
+def _agenome_card(agenome: dict[str, Any], role: str) -> str:
+    personas = agenome.get("personas") or []
+    mandate = agenome.get("primary_mandate") or []
+    persona_html = _list_items([str(p) for p in personas])
+    mandate_html = ""
+    if mandate:
+        mandate_html = f"""
+        <section class="genome-mandate">
+          <h5>Primary mandate</h5>
+          {_list_items([str(m) for m in mandate], "questions")}
+        </section>
+        """
+    return f"""
+    <article class="genome-card">
+      <header>
+        <span class="badge badge-genome">{_esc(role)}</span>
+        <h4>{_esc(str(agenome.get("name", agenome.get("id", "Agenome"))))}</h4>
+        <span class="agenome-id">{_esc(str(agenome.get("id", "")))}</span>
+      </header>
+      <section>
+        <h5>Personas</h5>
+        {persona_html}
+      </section>
+      {mandate_html}
+    </article>
+    """
+
+
+def _lineage_section(lineage: dict[str, Any]) -> str:
+    parents = lineage.get("parents") or []
+    mandate = lineage.get("mandate") or []
+    child = lineage.get("child") or {}
+
+    parent_cards = "".join(
+        f'<div class="genome-parent">{_agenome_card(parent, f"Parent {i + 1}")}</div>'
+        for i, parent in enumerate(parents)
+    )
+    child_card = f'<div class="genome-child">{_agenome_card(child, "Child")}</div>' if child else ""
+
+    return f"""
+    <section class="step step-lineage">
+      <div class="step-header">
+        <span class="step-num">♦</span>
+        <div>
+          <h2>Sexual reproduction — blind-spot breeding</h2>
+          <p class="step-desc">Two parents fuse into a child agenome mandated to hunt what both missed.</p>
+        </div>
+      </div>
+      <section class="judge-block highlight">
+        <h4>Breeding mandate</h4>
+        {_list_items([str(m) for m in mandate], "questions")}
+      </section>
+      <div class="genome-grid">
+        <div class="genome-parents">{parent_cards}</div>
+        <div class="fusion-glyph">× fuse →</div>
+        {child_card}
+      </div>
+    </section>
+    """
+
+
 def _critic_section(critic: dict[str, Any], passed: bool) -> str:
     if not critic:
         return '<p class="empty">No critic run.</p>'
@@ -213,42 +279,91 @@ def _critic_section(critic: dict[str, Any], passed: bool) -> str:
     return "\n".join(parts)
 
 
+def _offspring_round_block(round_data: dict[str, Any], is_last: bool) -> str:
+    n = round_data.get("round", 2)
+    passed = round_data.get("passed", False)
+    final = round_data.get("final") or ""
+    critic = round_data.get("critic") or {}
+    lineage = round_data.get("lineage") or {}
+    offspring = round_data.get("offspring") or {}
+    agenome = offspring.get("agenome") or {}
+
+    loop_arrow = ""
+    if not is_last:
+        loop_arrow = '<div class="connector loop">↻ next generation</div>'
+
+    lineage_html = _lineage_section(lineage) if lineage else ""
+    genome_card = _agenome_card(agenome, "Offspring") if agenome else ""
+
+    return f"""
+    <div class="generation generation-offspring" data-round="{n}">
+      <div class="gen-header">
+        <span class="gen-badge">Gen {n}</span>
+        <span class="gen-offspring">offspring run</span>
+        {"<span class='gen-pass'>✓ passed</span>" if passed else "<span class='gen-fail'>↻ revising</span>"}
+      </div>
+
+      {lineage_html}
+
+      <div class="connector">↓</div>
+
+      <section class="step step-offspring">
+        <div class="step-header">
+          <span class="step-num">1</span>
+          <div>
+            <h2>Child agenome answers</h2>
+            <p class="step-desc">Bred to resolve blind spots — not a prompt retry.</p>
+          </div>
+        </div>
+        {genome_card}
+        <div class="final-card">{_esc(final)}</div>
+      </section>
+
+      <div class="connector">↓</div>
+
+      <section class="step step-critic">
+        <div class="step-header">
+          <span class="step-num">2</span>
+          <div>
+            <h2>Critic — red team</h2>
+            <p class="step-desc">Does the offspring answer its mandate?</p>
+          </div>
+        </div>
+        <div class="judge-grid">{_critic_section(critic, passed)}</div>
+      </section>
+    </div>
+    {loop_arrow}
+    """
+
+
 def _round_block(round_data: dict[str, Any], is_last: bool) -> str:
+    if round_data.get("mode") == "offspring":
+        return _offspring_round_block(round_data, is_last)
+
     n = round_data.get("round", 1)
     passed = round_data.get("passed", False)
     panel = round_data.get("panel") or []
     analysis = round_data.get("analysis") or {}
     final = round_data.get("final") or ""
     critic = round_data.get("critic") or {}
-    prompt_used = round_data.get("prompt_used", "")
-
-    feedback_note = ""
-    if n > 1 and prompt_used:
-        feedback_note = f"""
-        <details class="round-prompt">
-          <summary>Round {n} prompt (includes critic feedback)</summary>
-          <pre>{_esc(prompt_used)}</pre>
-        </details>
-        """
 
     loop_arrow = ""
     if not is_last:
-        loop_arrow = '<div class="connector loop">↻ next generation</div>'
+        loop_arrow = '<div class="connector loop">♦ breed child on blind spots →</div>'
 
     return f"""
     <div class="generation" data-round="{n}">
       <div class="gen-header">
         <span class="gen-badge">Gen {n}</span>
-        {"<span class='gen-pass'>✓ passed</span>" if passed else "<span class='gen-fail'>↻ revising</span>"}
+        {"<span class='gen-pass'>✓ passed</span>" if passed else "<span class='gen-fail'>↻ breed offspring</span>"}
       </div>
-      {feedback_note}
 
       <section class="step step-panel">
         <div class="step-header">
           <span class="step-num">1</span>
           <div>
-            <h2>Panel — parallel answers</h2>
-            <p class="step-desc">Same prompt, different assumptions.</p>
+            <h2>Parent agenomes — parallel answers</h2>
+            <p class="step-desc">Rule-of-Cool variants, same prompt, different lenses.</p>
           </div>
         </div>
         <div class="panel-grid">{_panel_cards(panel)}</div>
@@ -261,7 +376,7 @@ def _round_block(round_data: dict[str, Any], is_last: bool) -> str:
           <span class="step-num">2</span>
           <div>
             <h2>Fusion judge</h2>
-            <p class="step-desc">Compare, don't merge.</p>
+            <p class="step-desc">Compare, don't merge. Surface blind spots.</p>
           </div>
         </div>
         <div class="judge-grid">{_judge_section(analysis)}</div>
@@ -516,6 +631,66 @@ def _render(trace: dict[str, Any]) -> str:
       font-weight: 700;
     }}
     .badge-panel {{ background: rgba(61, 214, 140, 0.2); color: var(--panel); }}
+    .badge-agenome {{ background: rgba(192, 132, 252, 0.2); color: var(--accent); }}
+    .badge-genome {{ background: rgba(192, 132, 252, 0.25); color: var(--accent); }}
+    .agenome-id {{
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }}
+    .panel-card header {{ flex-wrap: wrap; }}
+    .gen-offspring {{
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }}
+    .step-lineage .step-num,
+    .step-offspring .step-num {{
+      background: rgba(192, 132, 252, 0.15);
+      color: var(--accent);
+    }}
+    .genome-grid {{
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }}
+    .genome-parents {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }}
+    @media (max-width: 720px) {{ .genome-parents {{ grid-template-columns: 1fr; }} }}
+    .fusion-glyph {{
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.25rem 0;
+    }}
+    .genome-card {{
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+    }}
+    .genome-card header {{
+      margin-bottom: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }}
+    .genome-card h4, .genome-card h5 {{
+      margin: 0 0 0.35rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      width: 100%;
+    }}
+    .genome-card h4 {{ font-size: 0.95rem; text-transform: none; color: var(--text); letter-spacing: 0; }}
+    .genome-mandate {{ margin-top: 0.75rem; }}
     .judge-grid {{ display: grid; gap: 0.85rem; }}
     .judge-block {{
       background: var(--surface2);
@@ -606,7 +781,7 @@ def _render(trace: dict[str, Any]) -> str:
   <div class="wrap">
     <header class="hero">
       <h1>Fusion Trace</h1>
-      <p>Panel → judge → decision → critic → loop</p>
+      <p>Parent agenomes → judge → critic → breed child on blind spots</p>
       <span class="outcome">{_esc(outcome)}</span>
     </header>
 

@@ -1,6 +1,6 @@
 # Fusion Demo
 
-Panel → fusion judge → decision → critic → loop. Then opens the trace in your browser.
+Parent agenomes → fusion judge → decision → critic → **breed child on blind spots** → offspring run. Then opens the trace in your browser.
 
 ## First time only
 
@@ -18,7 +18,7 @@ chmod +x demo
 ./demo
 ```
 
-That's it. Runs 2 generations (panel, judge, decision, critic each), writes `fusion_trace.html`, opens it.
+That's it. Runs 2 generations (parents + offspring), writes `fusion_trace.html`, opens it.
 
 Custom prompt:
 
@@ -34,20 +34,21 @@ Terminal only, no browser:
 
 ## What happens
 
-1. **Panel** — two models answer in parallel
-2. **Fusion judge** — consensus, contradictions, clarifying questions
+1. **Parent agenomes** — two Rule-of-Cool variants answer in parallel (Transfer Hunter × Feasibility Hawk)
+2. **Fusion judge** — consensus, contradictions, clarifying questions, **blind spots**
 3. **Decision** — grounded answer
 4. **Critic** — scores it, asks what it glossed over
-5. If critic fails → **Gen 2** with feedback injected → repeat
-6. **HTML opens** — full trace for the room / projector
+5. If critic fails → **breed a child agenome** on blind spots (not a prompt retry)
+6. **Gen 2 offspring** — child answers with a primary mandate, critic again
+7. **HTML opens** — full lineage + trace for the room / projector
 
-Default prompt ("Room Vitals" for "a new room") is vague on purpose so Gen 1 usually fails and Gen 2 improves.
+Default prompt ("Room Vitals" for "a new room") is vague on purpose so Gen 1 usually fails and the bred offspring improves.
 
 ## Power-user flags
 
 | Flag | Effect |
 |------|--------|
-| `--rounds 3` | More generations |
+| `--rounds 3` | More generations (offspring only breeds once in this spike) |
 | `--no-html` | Skip HTML file |
 | `--no-open` | Write HTML but don't open browser |
 | `--mode official` | Also call OpenRouter's built-in Fusion API |

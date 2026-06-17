@@ -17,8 +17,10 @@ def parse_json_response(raw: str) -> dict[str, Any]:
         return {"raw_output": raw, "parse_error": True}
 
 
-def panel_to_trace(panel: list[tuple[str, str]]) -> list[dict[str, str]]:
+def panel_to_trace(panel: list[tuple[str, str]] | list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if panel and isinstance(panel[0], dict):
+        return list(panel)
     return [
         {"model": model, "label": model.split("/")[-1], "answer": answer}
-        for model, answer in panel
+        for model, answer in panel  # type: ignore[misc]
     ]
