@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fusion Trace — Sample (offline preview)</title>
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --surface: #141a22;
+      --surface2: #1a222d;
+      --border: #2a3544;
+      --text: #e8edf4;
+      --muted: #8b9bb0;
+      --panel: #3dd68c;
+      --judge: #f0b429;
+      --final: #5b9dff;
+      --accent: #c084fc;
+      --highlight: #fef08a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    header.hero { text-align: center; margin-bottom: 2.5rem; }
+    header.hero h1 { font-size: 1.75rem; margin: 0 0 0.35rem; }
+    header.hero p { color: var(--muted); margin: 0; }
+    .banner {
+      background: rgba(192, 132, 252, 0.12);
+      border: 1px solid rgba(192, 132, 252, 0.35);
+      border-radius: 8px;
+      padding: 0.65rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-align: center;
+    }
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .prompt-card label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .connector { text-align: center; color: var(--muted); padding: 0.35rem; }
+    .step-header { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .step-num {
+      width: 2rem; height: 2rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+      background: rgba(61, 214, 140, 0.15); color: var(--panel);
+    }
+    .step-judge .step-num { background: rgba(240, 180, 41, 0.15); color: var(--judge); }
+    .step-final .step-num { background: rgba(91, 157, 255, 0.15); color: var(--final); }
+    .step-header h2 { margin: 0; font-size: 1.1rem; }
+    .step-desc { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .panel-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .panel-card header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .panel-card .body { padding: 1rem; font-size: 0.88rem; color: #c5d0de; }
+    .judge-block {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .judge-block.highlight {
+      border-color: rgba(254, 240, 138, 0.35);
+      background: rgba(254, 240, 138, 0.06);
+    }
+    .judge-block h4 {
+      margin: 0 0 0.5rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .judge-block.highlight h4 { color: var(--highlight); }
+    .final-card {
+      background: linear-gradient(135deg, rgba(91, 157, 255, 0.08), rgba(192, 132, 252, 0.06));
+      border: 1px solid rgba(91, 157, 255, 0.35);
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">Sample preview — run <code>python fusion_demo.py --html</code> for a live trace</div>
+    <header class="hero">
+      <h1>Fusion Trace</h1>
+      <p>Two models → judge → one direction</p>
+    </header>
+    <div class="prompt-card">
+      <label>Live prompt from the room</label>
+      We're building "Room Vitals" — a small sensor kit you stick in a new room. What metrics should we track, and what's the one direction we should ship first?
+    </div>
+    <section class="step step-panel">
+      <div class="step-header">
+        <span class="step-num">1</span>
+        <div>
+          <h2>Panel — parallel answers</h2>
+          <p class="step-desc">Same prompt, different assumptions.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <article class="panel-card">
+          <header>gemini-2.5-flash</header>
+          <div class="body">Assuming a home office: CO₂, temperature, humidity. Ship a CO₂ + temp combo first — easiest win for air quality.</div>
+        </article>
+        <article class="panel-card">
+          <header>gpt-4o-mini</header>
+          <div class="body">Assuming nursery safety: sound level, temperature, motion. Start with temp + humidity — parents care most about sleep comfort.</div>
+        </article>
+      </div>
+    </section>
+    <div class="connector">↓</div>
+    <section class="step step-judge">
+      <div class="step-header">
+        <span class="step-num">2</span>
+        <div>
+          <h2>Judge — structured fusion</h2>
+          <p class="step-desc">Compare, don't merge.</p>
+        </div>
+      </div>
+      <div class="judge-block highlight">
+        <h4>Clarifying questions</h4>
+        <ul>
+          <li>What room type — nursery, office, server closet, Airbnb?</li>
+          <li>Who is the buyer — consumer, landlord, facility manager?</li>
+          <li>One sensor or a kit? Wired or battery?</li>
+        </ul>
+      </div>
+    </section>
+    <div class="connector">↓</div>
+    <section class="step step-final">
+      <div class="step-header">
+        <span class="step-num">3</span>
+        <div>
+          <h2>Decision — grounded answer</h2>
+        </div>
+      </div>
+      <div class="final-card"><strong>Decision (low confidence):</strong> Don't pick metrics yet — pick a beachhead room type first, then one metric that room's owner already searches for.</div>
+    </section>
+  </div>
+</body>
+</html>
