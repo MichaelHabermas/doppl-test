@@ -1,0 +1,4 @@
+# Root deploy shim for the Render `doppl-fusion-demo` web service.
+# The service builds with `pip install -r requirements.txt` from the repo root,
+# but the real Fusion demo lives in spikes/agenotype. Defer to its deps.
+-r spikes/agenotype/requirements.txt
