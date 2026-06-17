@@ -53,7 +53,7 @@ These are not commandments — interesting ideas that surfaced while we poked at
 ### Explore the madness, cap the combinatorics — 2026-06-16
 
 - **Banger:** **Get crazy inside the constitution.** Explore the madness, but cap the combinatorics. Madness lives inside each stratum; restraint lives at the borders.
-- **Lesson:** Hard limits make meta-level runnable: max strata (3–4 + witness), max parallel spawners, token caps, mortal projects, bedrock anchor that cannot move.
+- **Lesson:** Hard limits make meta-level runnable: max tree strata (L1–L4), Lα outside, max parallel spawners, token caps, mortal projects, bedrock anchor that cannot move.
 - **Evidence:** Design discussion — "beyond four levels lies madness, or money/time/intelligence we can't afford."
 - **Carry forward:** Constitution before combinatorics; metabolism is the sanity rail, not a constraint to apologize for.
 
@@ -64,17 +64,17 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Evidence:** Design discussion — "level threes and fours can't talk about everything."
 - **Carry forward:** Up = artifacts get abstract; down = pressure gets concrete. No free chat across strata.
 
-### Stratified organism (L1–L4 + witness) — 2026-06-16
+### Stratified organism (L1–L4 + Lα) — 2026-06-16
 
-- **Banger:** Four strata + a **witness outside the tree** — blind ideas feeling around a **meta-phant.**
+- **Banger:** Four strata **inside the tree** plus **Lα outside it** — blind ideas feeling around a **meta-phant.** Lα is not L5 (no fifth floor); it is the conversation *about* the whole organism — us + treatise + registers.
 - **Lesson:**
   - **L1 Ideation** — What's the idea? (agenomes, crucible debaters)
   - **L2 Deliberation** — Should we? What does "better" mean *for doing this*? (spawner-spawners, loop topologies)
   - **L3 Instrumentation** — What are we testing? (harness, rubrics, energy accounting)
   - **L4 Adjudication** — Did it pass? Who gets energy? (bedrock, held-out, pruning)
-  - **L5 Witness** — Not in the tree during the run. Watches, sifts lessons, asks "does this lesson make sense?" Registers, cron-on-repos, human + RoC reframe. Communicates *slowly* — through culture, not real-time chat with L1.
-- **Evidence:** Design discussion; proto-L5 already exists as `LESSONS_AND_BANGERS.md`, `MEMORY.md`, `BUGS_AND_MITIGATIONS.md`.
-- **Carry forward:** L4 judges runs; L5 judges lessons. RoC as seed-uncle passes through every level as reframing instinct, not breeding-loop participant.
+  - **Lα Witness** — Outside the tree. Observes L1–L4 in aggregate; does not receive L4 handoffs mid-run. Slow culture outward.
+- **Evidence:** Design discussion; proto-Lα = `TREATISE.md`, registers, this chat.
+- **Carry forward:** L4 judges runs; Lα judges lessons. No L4→Lα jurisdiction during runs. See [TREATISE.md § III](./TREATISE.md#iii-the-tree-l1l4-and-lα-outside-it).
 
 ### Spawn and nurture — 2026-06-16
 
@@ -146,7 +146,7 @@ These are not commandments — interesting ideas that surfaced while we poked at
 
 ### Convergent skills — 2026-06-17
 
-- **Banger:** Skills are **convergent anatomy** — evolutionary strategies (eyes, wings, claws) that re-evolve per stratum under parallel pressure. Rule of Cool is one; stratum-specific skill families (L1–L2 vs L3–L4 vs L5 witness) should emerge and be watched for.
+- **Banger:** Skills are **convergent anatomy** — evolutionary strategies (eyes, wings, claws) that re-evolve per stratum under parallel pressure. Rule of Cool is one; stratum-specific skill families (L1–L2 vs L3–L4 vs Lα witness/collapse) should emerge and be watched for.
 - **Lesson:** Skills compress aphenome on collapse: instructions + scripts/workflows (`@skill` graphs, host-specific expression via `AGENTS.md` ↔ `claude.md`). Spider out in full runs; collapse to skill allele, register entry, or agenome patch — partial or total.
 - **Evidence:** Design discussion; [Claude Code skills/workflows patterns](https://www.youtube.com/watch?v=FDxW2bfBOWE) — script execution inside skills, composable config imports.
 - **Carry forward:** See [TREATISE.md § VIII-b](./TREATISE.md#viii-b-convergent-skills--evolutionary-strategies-not-just-ideas); build collapse pipeline before skill library sprawls.
@@ -164,3 +164,17 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** Minimum viable ecology requires Falsifier peer pressure or Dominant captures the room; optimists-only populations go blind.
 - **Evidence:** Design discussion; treatise § V.
 - **Carry forward:** Add Falsifier as first-class seed mandate alongside Transfer Hunter / Feasibility Hawk / Contrarian.
+
+### Amemetics — 2026-06-17
+
+- **Banger:** **Antifragile memetics** — each collapse leaves the next generation harder to fool the same way. Working name: **amemetics.**
+- **Lesson:** Lα owns collapse on L4 prune signal; aphenome packet → register / skill / agenome patch; `BUGS_AND_MITIGATIONS.md` is immune memory. Gate before propagate or get memetic cancer.
+- **Evidence:** Design discussion; treatise § VI collapse pipeline.
+- **Carry forward:** Implement aphenome packet schema + Lα distillation workflow.
+
+### Lα not L5 — 2026-06-17
+
+- **Banger:** Witness is **Lα** — outside the ordinal tree, not a fifth floor. It is the conversation about the whole process (us + treatise + registers). Observes; does not take L4 handoffs mid-run.
+- **Lesson:** L0 was considered; α preferred (L0 reads as "under L1"). Lα has reflection without run-time authority over bedrock.
+- **Evidence:** Design discussion — "what you are right now, us talking about the thing."
+- **Carry forward:** See [TREATISE.md § III](./TREATISE.md#iii-the-tree-l1l4-and-lα-outside-it).

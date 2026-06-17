@@ -47,22 +47,44 @@ Evolution runs on two different contest geometries. Both are necessary. Conflati
 **Both geometries at once:** a Google-times-a-day of peer fitness exams *within* strata, and asymmetric nurture/judgment *between* strata. Conflating them yields endless chat without pruning, or pruning without growth. Uncle/nephew does not replace debate — it sits **orthogonally** to it.
 
 ```
-  L4 Adjudication          ← inter-stratum: bedrock, prune, allocate
-        ↕
-  L3 Instrumentation       ← inter-stratum: run cards, results
-        ↕
-  L2 Deliberation          ← INTRA: spawner-spawners fight (genotype vs crucible vs …)
-        ↕
-  L1 Ideation              ← INTRA: agenomes / debaters fight over the idea
+        ┌─────────────────────────────────────────────┐
+        │  Lα  Witness — outside the tree             │
+        │  (conversation, treatise, us re the thing)  │
+        └──────────────────┬──────────────────────────┘
+                           │ observes only — no jurisdiction
+                           │ into L1–L4 during runs
+        ┌──────────────────┴──────────────────────────┐
+        │              THE TREE (L1–L4)               │
+        │  L4 Adjudication   ← bedrock, prune, allocate │
+        │        ↕                                      │
+        │  L3 Instrumentation ← run cards, results      │
+        │        ↕                                      │
+        │  L2 Deliberation   ← INTRA: spawner-spawners │
+        │        ↕                                      │
+        │  L1 Ideation       ← INTRA: agenomes / debate │
+        └─────────────────────────────────────────────┘
 ```
 
 **The combinatorics live in intraspecies competition.** The world runs a Google-times-a-day of peer contests. We will make trade-offs on how often we can afford them. Metabolism is not apology — it is what makes the ecology real.
 
 ---
 
-## III. The stratified organism
+## III. The tree (L1–L4) and Lα (outside it)
 
-Four strata inside the tree, plus a witness outside it. Blind ideas feeling around a **meta-phant.**
+**L1–L4** are the ordinal tree — spawn, nurture, judgment flowing up and down *inside* the organism.
+
+**Lα** is **not** L5. We deliberately reject a fifth floor on the same building. Lα is **outside** the tree: the abstraction layer where the **whole process** is observed — not a stratum that L4 hands off to. No L4→Lα jurisdiction channel during runs. No risk of "level four talking to level five" as if they were peers in a taller stack.
+
+| Layer | In tree? | What it is |
+|-------|----------|------------|
+| **L1–L4** | yes | the running organism — ideation through adjudication |
+| **Lα** | **no** | the conversation *about* the organism — treatise, registers, human + agent reflection |
+
+**Lα is one of us.** It is this discussion. It is the agentic conversational piece watching the whole thing alongside you — not commanding it mid-run. It witnesses each level's outputs *in aggregate* after the fact (or from the side, like side-chat), sifts lessons, asks whether the lesson makes sense, and writes what should replicate.
+
+Proto-Lα already exists: `TREATISE.md`, the registers, this chat, future cron-over-dead-repos. RoC at Lα is reframing instinct for the **whole ecology** — not another debater in the L1 peer fight.
+
+**Naming:** L0 was considered; α preferred because L0 reads as "below L1." α marks meta — outside ordinality, not under it.
 
 | Stratum | Question | Intra-species contest | Inter-stratum role |
 |---------|----------|----------------------|-------------------|
@@ -70,11 +92,10 @@ Four strata inside the tree, plus a witness outside it. Blind ideas feeling arou
 | **L2 Deliberation** | Should we? What does "better" mean *here*? | Loop topologies, spawner-spawners | Nephew up; uncle down |
 | **L3 Instrumentation** | What are we testing? | Rubric variants, harness designs | Nephew up; uncle down |
 | **L4 Adjudication** | Did it pass? Who lives? | Held-out judges, bedrock checks | Verdict down; appeals nowhere |
-| **L5 Witness** | Does the lesson make sense? | *None during the run* | Slow culture outward |
 
-**L5** does not debate. It watches, sifts, writes. Proto-L5 already exists: this file, the registers, future cron-over-dead-repos. The witness is cold, post-hoc, memetic — it curates what replicates next.
+**Lα Witness** — Does the lesson make sense? What replicates? *Observes L1–L4; does not compete inside them.*
 
-**Constitution:** explore the madness, cap the combinatorics. Get crazy inside each stratum. Restraint at jurisdiction borders. Beyond four strata plus witness lies madness — or money, time, and intelligence we cannot afford.
+**Constitution:** explore the madness, cap the combinatorics. Get crazy inside each stratum (L1–L4). Restraint at jurisdiction borders. Beyond four tree levels lies madness — or money, time, and intelligence we cannot afford. Lα is unbounded in *reflection* but bounded in *authority* — it may not move bedrock during a run.
 
 ---
 
@@ -98,7 +119,7 @@ The uncle is **not an enabler**. Sometimes the uncle says: *this isn't worth it;
 
 But nurture is not absence. **Butterfly-wing touch** — at most, ideally never: a drop of perspective for lineages just shy of viability, early enough to matter, light enough not to become attachment. Discernment, not rescue. Ask, listen, uh-huh, uh-huh — and let the line continue.
 
-Sometimes they die young. Sometimes they take longer. Sometimes they become the new uncle. That's the memetic line getting **antifragile** — stronger for having been tested, not preserved.
+Sometimes they die young. Sometimes they take longer. Sometimes they become the new uncle. That's the memetic line getting **antifragile** — each collapse leaves the next generation harder to fool the same way. (Working name: **amemetics** — the study/practice of antifragile memetic inheritance.)
 
 ---
 
@@ -154,7 +175,44 @@ A run's **aphenome** is the full expressed behavior: transcripts, traces, token 
 
 **Spider and collapse, repeat:** lineages proliferate (full aphenome expression — repos, runs, debates), then partially or fully collapse to compressed form. Sometimes total collapse (repo deleted, only register survives). Sometimes partial (core skill survives, experiment code pruned). The tree branches outward in expression and folds inward in lessons — over and over.
 
-**Open design:** the witness (L5) or metabolism trigger owns collapse — not the dying nephew. Compression without bedrock correlation is memetic cancer: a skill that *feels* wise but doesn't improve held-out fitness must not propagate.
+### Amemetics — the collapse pipeline (sketch)
+
+**Amemetics:** antifragile memetics. Not just what survives — what survives *and makes the line harder to fool next time.* `BUGS_AND_MITIGATIONS.md` is immune memory: each entry is a defeated fooling-attempt compressed for posterity.
+
+**Who owns collapse:** **Lα**, on signal from **L4 metabolism** — never the dying nephew narrating their own legacy. The nephew reports up; L4 starves or prunes; Lα distills.
+
+**Triggers (any of):**
+
+| Trigger | Source | Typical collapse |
+|---------|--------|------------------|
+| **Bedrock fail + budget exhausted** | L4 | total — lesson + maybe skill allele |
+| **Explicit prune** | L4 or human | total or partial |
+| **Mayfly TTL** | L3 harness (max runs / age) | forced distill before rot |
+| **Bedrock pass** | L4 | partial — promote skill/workflow, archive trace, prune experiment code |
+| **Fork worth logging** | human or Lα during reflection | register only — no germline change yet |
+
+**Collapse input bundle (aphenome packet):**
+
+- trace artifacts (`fusion_trace.html`, round JSON)
+- token / cost telemetry
+- critic scores + bedrock assertion results
+- git history or diff (if spike repo)
+- optional: revision ledger, uncle interventions (butterfly-wing log)
+
+**Collapse outputs (one or more — plural, not skills-only):**
+
+| Output | When | Antifragile effect |
+|--------|------|-------------------|
+| `LESSONS_AND_BANGERS.md` entry | meta-concept reframed | shifts how we see the problem |
+| `MEMORY.md` fork | path chosen / deferred | records what not to prematurely close |
+| `BUGS_AND_MITIGATIONS.md` entry | proxy win found | **harder to fool the same way again** |
+| `skills/.../SKILL.md` | reusable procedure | convergent organ for next host |
+| agenome patch | heritable mandate change | germline defense |
+| `TREATISE.md` revision | narrative synthesis | Lα cultural DNA |
+
+**Gate before propagate:** compressed artifact must either (a) correlate with bedrock improvement on held-out, or (b) be witness-approved as *epistemic* gain (fork/banger) even when the spike died. Otherwise: **memetic cancer** — archive in trace, do not promote.
+
+**Spider → collapse → inherit → spider:** mortal `spikes/*` folders express fat aphenomes; Lα collapse folds them to thin alleles at repo root; next spike inherits root libraries + registers. Lineage log grows; organisms die.
 
 ---
 
@@ -182,7 +240,7 @@ The objective may evolve. **The anchor may not move** — executable checks, hel
 
 Reward hacking is redefining winning as whatever you already produce. Counter-mutation: bedrock, rotating critics, witness review, [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md).
 
-Rule of Cool is generation-0 seed — cool uncle at L5, reframing instinct at every stratum, not another debater in the peer fight. Run RoC through the level stack as meta-experiment: versions compete; what collapses into steady-state DNA is what survives witness review.
+Rule of Cool is generation-0 seed — cool uncle at Lα, reframing instinct for the whole ecology, not another debater in the L1 peer fight. Run RoC through the level stack as meta-experiment: versions compete; what collapses into steady-state DNA is what survives Lα witness review.
 
 ---
 
@@ -212,7 +270,7 @@ That maps to Doppl:
 |--------------|------------------------------|----------|
 | **L1–L2** | ideation / deliberation skills | cross-domain candidates, fork surfacing, "what's the one move" |
 | **L3–L4** | instrumentation / adjudication skills | harness runs, bedrock checks, repro triggers, cost telemetry |
-| **L5** | witness / collapse skills | distill aphenome → register, skill allele, agenome patch |
+| **Lα** | witness / collapse skills | distill aphenome → register, skill allele, agenome patch; amemetics |
 
 Watch for **natural convergence**: as mortal spikes run, the same skill shapes should reappear (uncle-questioner, falsifier-audit, harness-runner). Those are your eyes and wings — promote them to shared skill library; let dead spike repos collapse.
 
@@ -230,10 +288,11 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 | Genotype reproduction on blind spots | Crucible sibling spike |
 | Fusion judge + critic | Shared harness across spawners |
 | `fusion_trace.html` extended aphenotype | Mortal `spikes/` folders + auto-prune |
-| Registers as proto-witness | Cron witness over dead repos |
+| Registers as proto-Lα | Cron witness over dead repos |
 | This treatise | Org-owned autonomous repo spawning |
-| RoC skill (generation-0) | Stratum-specific skill families (L1–L2, L3–L4, L5 witness) |
+| RoC skill (generation-0) | Stratum-specific skill families (L1–L2, L3–L4, Lα witness/collapse) |
 | | Skill graph (`@skill` → `@skill`), collapse pipeline aphenome → skill |
+| Spike at repo root (today) | `spikes/*` layout — meta at root, mortal sprojects below |
 
 We are in **chaos space before constitution** — naming the organism while the phenotype forms. Premature optimization is the enemy. So is never building. The move is **small mortal experiments**, not big irreversible forks.
 
@@ -245,10 +304,46 @@ We are in **chaos space before constitution** — naming the organism while the 
 2. **Intra-species budget** — How many peer combats per stratum per run given token metabolism?
 3. **Archetype mix** — Minimum viable ecology so Dominant cannot capture without Falsifier?
 4. **Nephew honesty** — How do we reward reporting failure upward, not just optimism?
-5. **Witness automation** — When does L5 get an LLM vs. stay human + register?
+5. **Lα automation** — When does witness get an LLM cron vs. stay human + register + conversation?
 6. **Bedrock for Jun 29** — Critic only, or critic + human gate + one executable check?
-7. **Collapse pipeline** — What triggers aphenome → skill vs. register vs. agenome patch? Who owns it (L5 witness? metabolism on prune?)?
+7. **Collapse pipeline** — Implement Lα distillation script? Input bundle schema?
 8. **Skill convergence catalog** — As spikes run, which organs reappear? Minimum skill ecology per stratum pair?
+9. **Repo layout** — Move genotype spike to `spikes/genotype/` now or after second sproject exists?
+
+---
+
+## XI. Repo ecology — meta at root, spikes below
+
+**Intent:** top level = Lα + shared culture (treatise, registers, proposal, `AGENTS.md`, future `bedrock/`, `harness/`). Below = **mortal sprojects** (spikes) — each a mayfly organism with its own README, demo, requirements.
+
+```
+doppl-test/                    ← Lα lives here
+  TREATISE.md
+  LESSONS_AND_BANGERS.md
+  MEMORY.md
+  BUGS_AND_MITIGATIONS.md
+  AGENTS.md
+  Doppl_Capstone_Proposal_volume_2.txt
+  bedrock/                     ← (embryology) shared prompts + assertions
+  harness/                     ← (embryology) run all spikes, compare traces
+  spikes/
+    genotype/                  ← current fusion demo (move target)
+      fusion_demo.py
+      agenome.py
+      demo
+      README.md
+      ...
+    crucible/                  ← (embryology) belief-revision sibling
+    ...
+```
+
+**Why `spikes/` over `sprojects/`:** spike is already the vocabulary in registers and capstone. *Sproject* works as slang; folder name can stay `spikes/`.
+
+**Why move:** makes mortality literal — deleting `spikes/crucible/` doesn't touch meta. New experiments spawn as siblings, not repo rot. Lα docs stay stable while aphenomes express below.
+
+**Costs of moving now:** `demo` path, imports, root `README.md` → ecology index, `render.yaml` if `app.py` moves, one-time refactor. **Defer if** only one spike exists and chaos space still hot; **do if** crucible spike imminent or demo confusion hurts.
+
+**Minimal move:** `spikes/genotype/` gets all runnable Python + spike README; root README becomes "ecology overview + how to run genotype spike."
 
 ---
 
@@ -258,3 +353,4 @@ We are in **chaos space before constitution** — naming the organism while the 
 |------|------|
 | 2026-06-17 | Initial treatise — synthesis of design conversations through intraspecies/interspecies frame, ecological archetypes, uncle-nephew asymmetry |
 | 2026-06-17 | Convergent skills, aphenome collapse machinery, butterfly-wing uncle, skill-graph / host-expression (`AGENTS.md` ↔ `claude.md`) |
+| 2026-06-17 | Lα (not L5) — witness outside tree; amemetics / collapse pipeline sketch; `spikes/` repo ecology proposal |

@@ -52,3 +52,11 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Because:** premature optimization is especially toxic when the product *is* meta-improvement; documenting bangers and forks *is* L5 witness work and valid spike output
 - **Revisit if:** team needs a shippable cut for showcase deadline — then apply [Explore the madness, cap the combinatorics](./LESSONS_AND_BANGERS.md#explore-the-madness-cap-the-combinatorics--2026-06-16) constitution
 - **Spirit note:** meta-phant first, demo second — witness layer writing notes while phenotype forms
+
+### Meta at root, spikes below — 2026-06-17
+
+- **Chose:** (intent) Lα docs + registers at repo root; runnable spikes in `spikes/<name>/` as mortal sprojects
+- **Over:** monolithic repo where meta treatise and genotype demo share one flat directory
+- **Because:** literal mortality — delete or archive a spike folder without touching culture; mirrors "lineage log survives, organism doesn't"
+- **Revisit if:** move cost outweighs benefit with only one spike and no crucible sibling yet — defer is valid
+- **Spirit note:** see [TREATISE.md § XI](./TREATISE.md#xi-repo-ecology--meta-at-root-spikes-below)
