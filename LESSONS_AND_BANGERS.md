@@ -122,3 +122,45 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** Fixed turn protocol with mandatory moves (objection, concession-or-rebuttal, steal-one-point). Judge scores final idea + revision quality + unresolved tension — not rhetorical victory. Competing L2 spawner to genotype path.
 - **Evidence:** Design discussion — cheap models need structure, not open-ended chat; crucible vs. fusion-only as loop-topology fork.
 - **Carry forward:** Sibling spike candidate; race under shared L3 harness + L4 bedrock — see [Parallel spawners](./MEMORY.md#parallel-spawners-not-fork-resolution--2026-06-16).
+
+### Intraspecies vs. inter-stratum — 2026-06-17
+
+- **Banger:** **Debate is intraspecies competition** — peers at the same stratum fighting over the same scarce resource (the idea, the rubric, the budget). **Uncle-nephew is inter-stratum flow** — asymmetric nurture and judgment up/down the tree. Different geometries; don't conflate them.
+- **Lesson:** Combinatorics live in peer contests (a Google-times-a-day of fitness exams); jurisdiction lives at stratum borders. Both necessary — optimism-up/nephew without Falsifier peer pressure goes blind.
+- **Evidence:** Design discussion — ecological archetypes (Dominant, Falsifier, Artisan) as intra-stratum roles; uncle as inter-stratum nurture.
+- **Carry forward:** See [TREATISE.md § II](./TREATISE.md#ii-two-competitions-two-geometries).
+
+### Both geometries at once — 2026-06-17
+
+- **Banger:** Doppl needs both geometries running at once: a Google-times-a-day of peer fitness exams *within* strata, and asymmetric nurture/judgment *between* strata. Conflating them is endless chat without pruning, or pruning without growth.
+- **Lesson:** Intra-species budget and inter-stratum jurisdiction are separate knobs; tune both.
+- **Evidence:** Design discussion — treatise § II.
+- **Carry forward:** Never build uncle-channel as a substitute for peer debate, or vice versa.
+
+### Uncle orthogonal to debate — 2026-06-17
+
+- **Banger:** Uncle/nephew does not assume or replace debate — it sits **orthogonally** to intraspecies competition.
+- **Lesson:** Debate = peers, same stratum. Uncle = asymmetric development, adjacent stratum. Two contest geometries.
+- **Evidence:** Design discussion — correction of earlier framing.
+- **Carry forward:** See [TREATISE.md § II](./TREATISE.md#ii-two-competitions-two-geometries).
+
+### Convergent skills — 2026-06-17
+
+- **Banger:** Skills are **convergent anatomy** — evolutionary strategies (eyes, wings, claws) that re-evolve per stratum under parallel pressure. Rule of Cool is one; stratum-specific skill families (L1–L2 vs L3–L4 vs L5 witness) should emerge and be watched for.
+- **Lesson:** Skills compress aphenome on collapse: instructions + scripts/workflows (`@skill` graphs, host-specific expression via `AGENTS.md` ↔ `claude.md`). Spider out in full runs; collapse to skill allele, register entry, or agenome patch — partial or total.
+- **Evidence:** Design discussion; [Claude Code skills/workflows patterns](https://www.youtube.com/watch?v=FDxW2bfBOWE) — script execution inside skills, composable config imports.
+- **Carry forward:** See [TREATISE.md § VIII-b](./TREATISE.md#viii-b-convergent-skills--evolutionary-strategies-not-just-ideas); build collapse pipeline before skill library sprawls.
+
+### Butterfly-wing uncle — 2026-06-17
+
+- **Banger:** Uncle does not prevent dying — but **butterfly-wing touch**: discernment for lineages just shy of viability; a drop of perspective early on, at most, ideally never; never fight-for-them-no-matter-what.
+- **Lesson:** Nurture channel needs a lightness constant; over-nurture becomes attachment (bad friction); zero nurture is oviparous abandon.
+- **Evidence:** Design discussion — refinement of uncle contract.
+- **Carry forward:** Uncle LLM contract must cap intervention frequency and magnitude.
+
+### Personality ecology — 2026-06-17
+
+- **Banger:** Niche partitioning — Dominant, Falsifier, Artisan, Optimist, Uncle as **ecological archetypes** (agent mandates, not people). Unhinged but structurally correct.
+- **Lesson:** Minimum viable ecology requires Falsifier peer pressure or Dominant captures the room; optimists-only populations go blind.
+- **Evidence:** Design discussion; treatise § V.
+- **Carry forward:** Add Falsifier as first-class seed mandate alongside Transfer Hunter / Feasibility Hawk / Contrarian.
