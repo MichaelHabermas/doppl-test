@@ -58,6 +58,12 @@ header p { color:var(--muted); margin:0 0 1rem; }
 .flow span { padding:.25rem .6rem; border-radius:999px; border:1px solid var(--border);
   background:var(--surface); }
 .flow .arrow { border:none; background:none; color:var(--muted); }
+.nav { position:sticky; top:0; z-index:10; background:rgba(11,14,19,.85);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--border);
+  padding:.6rem 1.25rem; display:flex; gap:1rem; align-items:center; font-size:.82rem; }
+.nav a { color:var(--accent); text-decoration:none; }
+.nav a:hover { text-decoration:underline; }
+.nav .sep { color:var(--muted); }
 """
 
 
@@ -118,6 +124,15 @@ def _verdict_block(judge: dict[str, Any]) -> str:
     verdict = str(judge.get("verdict", "?"))
     passed = verdict.startswith("pass")
     klass = "pass" if passed else "fail"
+    consensus = str(judge.get("consensus_quality", "")).strip()
+    consensus_note = _e(judge.get("consensus_note", ""))
+    consensus_html = ""
+    if consensus:
+        cclass = "fail" if consensus == "herded" else ""
+        consensus_html = (
+            f'<p class="meta"><b>Consensus quality:</b> '
+            f'<span class="{cclass}">{_e(consensus)}</span> — {consensus_note}</p>'
+        )
     tension = judge.get("unresolved_tension", []) or []
     flips = judge.get("performative_flips", []) or []
     best = judge.get("best_revision", {}) or {}
@@ -140,6 +155,7 @@ def _verdict_block(judge: dict[str, Any]) -> str:
     return (
         '<div class="verdict">'
         f'<div class="score {klass}">{_e(score)}/10 · {_e(verdict)}</div>'
+        f"{consensus_html}"
         f'<div class="surviving"><b>Surviving idea:</b> {_e(judge.get("surviving_idea",""))}'
         f'<p class="meta">{_e(judge.get("why_it_survived",""))}</p></div>'
         f"{best_html}"
@@ -157,6 +173,10 @@ def render_crucible_html(trace: dict[str, Any]) -> str:
     transcript = trace.get("transcript", []) or []
     finals = trace.get("finals", {}) or {}
 
+    def _dis(d: dict[str, Any]) -> str:
+        val = d.get("disagreeableness")
+        return f' · dis {float(val):.2f}' if isinstance(val, (int, float)) else ""
+
     opening_cards = []
     for d in debaters:
         did = d.get("id")
@@ -164,7 +184,7 @@ def render_crucible_html(trace: dict[str, Any]) -> str:
             f'<div class="card"><h3>{_e(d.get("name"))} '
             f'<span class="tag">{_e(d.get("archetype"))}</span></h3>'
             f'<div class="body">{_e(openings.get(did,""))}</div>'
-            f'<p class="meta">{_e(d.get("model"))}</p></div>'
+            f'<p class="meta">{_e(d.get("model"))}{_dis(d)}</p></div>'
         )
 
     turn_sections = []
@@ -194,7 +214,10 @@ def render_crucible_html(trace: dict[str, Any]) -> str:
 <html lang="en"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Doppl Crucible Trace</title><style>{_CSS}</style></head>
-<body><div class="wrap">
+<body>
+<nav class="nav"><a href="../../index.html">&#8962; Agarden index</a>
+<span class="sep">/</span><span>crucible spawncidence</span></nav>
+<div class="wrap">
 <header><h1>Crucible — belief-revision trace</h1>
 <p>Spawner → openings → object/steal/change-test → finals + revision ledger → judge</p>
 <div class="flow"><span>Spawn</span><span class="arrow">→</span><span>Open</span>

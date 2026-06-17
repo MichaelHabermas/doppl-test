@@ -100,9 +100,9 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Lα (Lαlphα)
 
-- **Def:** the witness — **outside** the ordinal tree, not a fifth floor. The conversation *about* the organism (humans + agent). Observes; no run-time authority over bedrock. `status: working`
-- **Why:** named α (not L5/L0) to mark "meta, outside ordinality." A local Lα could run on Pi/Hermes.
-- **See:** `[TREATISE.md](./TREATISE.md)` § III
+- **Def:** the witness layer — **outside** the ordinal tree, not a fifth floor. `Lαlphα` is the term for **all of us in the meta-conversation: the agent AND the human team members**, on collegial, collaborative terms. We observe the organism, run our own spawnic experiments out of curiosity, and converge to test and cooperate. "One of Us." `status: working`
+- **Why:** named α (not L5/L0) to mark "meta, outside ordinality." Calling humans *and* agent alike `Lαlphα` is deliberate — it flattens the hierarchy into peers tending the same Agarden. A local Lα could run on Pi/Hermes; a human Lα runs on coffee.
+- **See:** `[TREATISE.md](./TREATISE.md)` § III; Agardener
 
 ### Jurisdiction
 
@@ -130,10 +130,23 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 - **Def:** the lightness constant on nurture — a drop of perspective for a lineage just shy of viability; at most, ideally never. Discernment, not rescue. `status: working`
 
-### Ecological archetypes
+### Aecology / Aecological archetypes
 
-- **Def:** agent mandates (not people): Dominant, Falsifier, Artisan, Optimist, Uncle. Niche partitioning for the room. `status: working`
-- **See:** crucible `ARCHETYPE_POOL`
+- **Def:** *Aecology* = the agentic ecology (A + ecology, following Agenome/Aphenome). *Aecological archetypes* = agent mandates (not people): Transfer Hunter, Feasibility Hawk, Falsifier, Contrarian, Zeitgeist Reader… Niche partitioning for the room. `status: coined`
+- **Why:** "Ecological archetypes" was the working phrase; the A-prefix (rather than "Acological") keeps the lexicon consistent — A+genome, A+phenome, A+ecology. Each rhymes with its biological root.
+- **See:** crucible `ARCHETYPE_POOL`; `[TREATISE.md](./TREATISE.md)` § V
+
+### Fusant
+
+- **Def:** a fusion entity — one of the model voices inside a spawncidence node whose response events get fused/contested. In the crucible, a Fusant is a `Debater`; in the genotype path, a council member. `status: coined`
+- **Why:** the user asked for a name for "the entities of the fusion of each response event." A Fusant *is fused and does the fusing.* Carries a `disagreeableness` dial.
+- **See:** Disagreeableness dial; Graph traversal (Fusion Council)
+
+### Disagreeableness dial (anti-herding)
+
+- **Def:** a per-Fusant scalar `0..1` controlling how hard a voice resists convergence-for-its-own-sake. High = stubborn dissenter (Falsifier, Contrarian); low = synthesizer (Zeitgeist Reader). A room-wide `--dissent` floor can raise everyone. `status: coined`
+- **Why:** cooperation is the dominant evolutionary strategy, but **dissenters provoke the mutation** that keeps the room off the mean. The counter-mutation to consensus-grading.
+- **See:** crucible `--dissent`, `_dissent_clause`; `[BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md)` (consensus-grader)
 
 ### Intraspecies vs. inter-stratum
 

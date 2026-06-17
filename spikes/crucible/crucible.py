@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 import webbrowser
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -81,45 +82,56 @@ SPAWNCIDENCE_CAP = 5  # metabolism: explore the madness, cap the combinatorics
 
 @dataclass
 class Debater:
-    """A crucible participant — ecological archetype with a stance temperament."""
+    """A crucible participant — an ecological-archetype Fusant with a stance temperament.
+
+    `disagreeableness` (0..1) is the anti-herding dial: how hard this voice resists
+    convergence-for-its-own-sake. Cooperation is the dominant strategy, but dissenters
+    provoke the mutation that keeps the room off the mean.
+    """
 
     id: str
     name: str
     model: str
     archetype: str
     persona: str
-    temperament: str  # how disagreeable / how it argues
+    temperament: str  # how it argues
+    disagreeableness: float = 0.5  # 0 = eager synthesizer, 1 = stubborn dissenter
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
-# Ecological archetypes the spawner may draw from (treatise § V).
-ARCHETYPE_POOL: dict[str, dict[str, str]] = {
+# Ecological (Aecological) archetypes the spawner may draw from (treatise § V).
+ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
     "transfer-hunter": {
         "name": "Transfer Hunter",
         "persona": "veteran engineer hunting cross-domain analogies that crack the problem",
         "temperament": "bold, pushes a non-obvious transplant; defends it but will concede on feasibility",
+        "disagreeableness": 0.5,
     },
     "feasibility-hawk": {
         "name": "Feasibility Hawk",
         "persona": "startup CTO obsessed with 2-week shippability and real constraints",
         "temperament": "kills fantasy scope; concedes when a bold idea is actually cheap",
+        "disagreeableness": 0.55,
     },
     "falsifier": {
         "name": "Falsifier",
         "persona": "wolf-hunter who sincerely looks for the flaw others are hiding from",
         "temperament": "skeptical, demands the failure mode; relents only when a real falsification test is offered",
+        "disagreeableness": 0.85,
     },
     "contrarian": {
         "name": "Contrarian",
         "persona": "designer who rejects the obvious direction and names the buried assumption",
         "temperament": "argues the opposite on principle but must change its mind if out-reasoned",
+        "disagreeableness": 0.8,
     },
     "zeitgeist-reader": {
         "name": "Zeitgeist Reader",
         "persona": "growth strategist sensing what the moment rewards and what the room actually wants",
         "temperament": "synthesizer; tries to steal the best from each and reframe",
+        "disagreeableness": 0.3,
     },
 }
 
@@ -224,7 +236,9 @@ def run_spawner(client: httpx.Client, prompt: str, cap: int) -> dict[str, Any]:
     return parse_json_response(raw)
 
 
-def build_roster(spawner_plan: dict[str, Any], cap: int) -> tuple[list[Debater], dict[str, Any]]:
+def build_roster(
+    spawner_plan: dict[str, Any], cap: int, dissent_floor: float = 0.0
+) -> tuple[list[Debater], dict[str, Any]]:
     roster_spec = spawner_plan.get("roster") or []
     chosen_ids: list[str] = []
     for entry in roster_spec:
@@ -243,6 +257,7 @@ def build_roster(spawner_plan: dict[str, Any], cap: int) -> tuple[list[Debater],
     debaters: list[Debater] = []
     for i, aid in enumerate(chosen_ids):
         meta = ARCHETYPE_POOL[aid]
+        base = float(meta.get("disagreeableness", 0.5))
         debaters.append(
             Debater(
                 id=f"{aid}-{i}",
@@ -251,21 +266,44 @@ def build_roster(spawner_plan: dict[str, Any], cap: int) -> tuple[list[Debater],
                 archetype=aid,
                 persona=meta["persona"],
                 temperament=meta["temperament"],
+                disagreeableness=max(base, dissent_floor),
             )
         )
     return debaters, spawner_plan
 
 
+def _dissent_clause(disagreeableness: float) -> str:
+    if disagreeableness >= 0.75:
+        return (
+            "Your disagreeableness is HIGH. Hold your ground hard. Do not converge to be "
+            "agreeable. If the room is herding toward one answer, that is your cue to attack "
+            "its weakest assumption or steelman the rejected option. Concede ONLY to a real "
+            "argument or a falsification test — never to social pressure."
+        )
+    if disagreeableness >= 0.45:
+        return (
+            "Your disagreeableness is MODERATE. Cooperate, but keep at least one real crux alive. "
+            "If you agree, say exactly why — and name what you'd still need to be sure."
+        )
+    return (
+        "Your disagreeableness is LOW. You are a synthesizer — but synthesis is not capitulation. "
+        "Fuse the strongest points, and still flag any tension you are papering over."
+    )
+
+
 def debater_system(debater: Debater) -> str:
-    return f"""You are {debater.name}, a debater in an idea crucible.
+    return f"""You are {debater.name}, a Fusant in an idea crucible.
 
 Persona: {debater.persona}
 Temperament: {debater.temperament}
+
+{_dissent_clause(debater.disagreeableness)}
 
 Rules of this room:
 - You have a real point of view and you argue it with personality.
 - You are NOT disagreeable for its own sake. Disagreement must carry persuasion.
 - You may change your mind — that is a strength here, not a loss — but only for a real reason.
+- Premature consensus is the enemy. Regression to the mean is a failure, not a success.
 - Be concise. This is a working room, not an essay."""
 
 
@@ -328,15 +366,18 @@ def run_turn(
                     "content": (
                         f"Prompt:\n{prompt}\n\n"
                         f"What the others just said:\n{room}\n\n"
-                        f"This is turn {turn_num}. You MUST do all three moves:\n"
+                        f"This is turn {turn_num}. You MUST do all four moves:\n"
                         "1. OBJECT: one concrete objection to a specific peer (name them).\n"
                         "2. STEAL: one genuinely good point you take from a peer.\n"
                         "3. CHANGE-TEST: state exactly what would change your mind.\n"
-                        "Then give your updated stance in one line. Under 140 words."
+                        "4. HOLD-OR-FOLD: if the room is converging, either name the crux that is "
+                        "still unresolved, or steelman the option being abandoned — do NOT just agree.\n"
+                        "Then give your updated stance in one line. Under 150 words."
                     ),
                 },
             ],
-            temperature=0.6,
+            # Higher disagreeableness => a touch more divergence in sampling.
+            temperature=0.55 + 0.25 * d.disagreeableness,
         )
         return d.id, text
 
@@ -386,15 +427,27 @@ def run_finals(
 
 JUDGE_SYSTEM = """You are the crucible judge. You read an entire debate, not just the final answers.
 
+CONSENSUS IS NOT QUALITY. A room that quickly agreed may have regressed to the mean.
+Distinguish:
+- "resolved": agreement reached by genuinely defeating the alternatives with argument/evidence.
+- "herded": agreement reached by social convergence — nobody really tested the weak points.
+
 Do NOT reward whoever was loudest or whoever flip-flopped most. Reward:
 - the strongest SURVIVING idea after pressure,
 - EARNED revision (changed mind for a real reason vs. performative agreement),
 - honestly preserved disagreement (unresolved tension that is real, not laziness).
 
+Scoring discipline:
+- If consensus_quality is "herded" OR unresolved_tension is empty AND the prompt was hard,
+  the score MUST NOT exceed 6, and verdict should lean "needs-revision".
+- An empty unresolved_tension on a genuinely contested prompt is a red flag, not a win.
+
 Return ONLY valid JSON:
 {
   "surviving_idea": "the single best idea that survived the crucible (<=120 words)",
   "why_it_survived": "what pressure it withstood",
+  "consensus_quality": "resolved|herded|mixed",
+  "consensus_note": "one line: was agreement earned or social?",
   "best_revision": {"who": "debater name", "what_changed": "...", "earned": true},
   "performative_flips": ["debaters who changed their mind without a real reason, if any"],
   "unresolved_tension": ["real disagreements still standing and worth keeping"],
@@ -443,6 +496,7 @@ def run_crucible(
     forced_count: int | None,
     use_spawner: bool,
     cap: int,
+    dissent_floor: float = 0.0,
 ) -> dict[str, Any]:
     console.rule("[bold cyan]Spawner — deciding the room[/bold cyan]")
     if use_spawner:
@@ -454,11 +508,11 @@ def run_crucible(
         plan["roster"] = plan["roster"][:forced_count]
         plan["count"] = len(plan["roster"])
 
-    debaters, plan = build_roster(plan, cap)
+    debaters, plan = build_roster(plan, cap, dissent_floor)
     console.print(Syntax(json.dumps(plan, indent=2), "json", theme="monokai", line_numbers=False))
     console.print(
-        f"[dim]Spawned {len(debaters)} debater(s): "
-        + ", ".join(d.name for d in debaters)
+        "[dim]Spawned "
+        + ", ".join(f"{d.name} (dis={d.disagreeableness:.2f})" for d in debaters)
         + "[/dim]"
     )
 
@@ -521,6 +575,12 @@ def main() -> None:
         help="Force debater count (overrides spawner latitude)",
     )
     parser.add_argument("--no-spawner", action="store_true", help="Skip the spawner; use the default roster")
+    parser.add_argument(
+        "--dissent",
+        type=float,
+        default=0.0,
+        help="Anti-herding floor 0..1 — raises every Fusant's disagreeableness to at least this",
+    )
     parser.add_argument("--cap", type=int, default=SPAWNCIDENCE_CAP, help="Metabolism cap on spawncidences")
     parser.add_argument("--json-out", default=None, help="Write the full trace JSON to this path")
     parser.add_argument("--html", action="store_true", help="Write a witnessable HTML trace and open it")
@@ -540,6 +600,7 @@ def main() -> None:
         console.print(f"[dim]Local backend: {_BACKEND.base_url} · model={_BACKEND.model_override}[/dim]")
 
     cap = max(2, min(args.cap, 8))
+    dissent_floor = max(0.0, min(args.dissent, 1.0))
     with make_client(_BACKEND) as client:
         trace = run_crucible(
             client,
@@ -548,6 +609,7 @@ def main() -> None:
             forced_count=args.debaters,
             use_spawner=not args.no_spawner,
             cap=cap,
+            dissent_floor=dissent_floor,
         )
 
     if args.json_out:
@@ -558,8 +620,21 @@ def main() -> None:
     if args.html:
         path = write_crucible_html(trace, args.html_out)
         console.print(f"[dim]Wrote HTML trace → {path}[/dim]")
+        refresh_root_index()
         if not args.no_open:
             webbrowser.open(Path(path).resolve().as_uri())
+
+
+def refresh_root_index() -> None:
+    """Best-effort: rebuild the root Agarden index so the new trace is navigable."""
+    builder = Path(__file__).resolve().parents[2] / "build_index.py"
+    if not builder.exists():
+        return
+    try:
+        subprocess.run([sys.executable, str(builder)], check=False, capture_output=True)
+        console.print("[dim]Refreshed root index.html[/dim]")
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":
