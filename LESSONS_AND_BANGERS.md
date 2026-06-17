@@ -15,6 +15,20 @@ These are not commandments — interesting ideas that surfaced while we poked at
 
 ## Entries
 
+### Breed on blind spots — 2026-06-16
+
+- **Banger:** Breed the child agenome on blind spots, not on critic feedback.
+- **Lesson:** The fusion judge's `blind_spots` and `clarifying_questions` are the breeding target — not "here's what you got wrong, try again."
+- **Evidence:** `extract_breeding_mandate()` in `agenome.py`; Gen 2 offspring runs with `primary_mandate`, not an injected retry prompt.
+- **Carry forward:** Reproduction is epistemic-gap-directed — offspring exist to see what parents couldn't.
+
+### Chromosomalize Rule of Cool — 2026-06-16
+
+- **Banger:** Chromosomalize Rule of Cool into a JSON agenome.
+- **Lesson:** RoC isn't a chat trick — it's a serializable genome: personas, ranking rubric, output contract, mandate. Heritable. Crossover-able.
+- **Evidence:** `Agenome` dataclass + seed variants in `agenome.py`; HTML trace renders parent/child genomes as first-class objects.
+- **Carry forward:** Generation-0 is a genome file, not a skill invocation. Population dynamics plug into schema, not prompts.
+
 ### Genotype over transcript — 2026-06-16
 
 - **Banger:** Put evolution in the genotype, not the transcript. When something fails scrutiny, don't patch the answer — breed a new agent. Selection pressure belongs on *who* is thinking, not *how long* they're allowed to talk.
