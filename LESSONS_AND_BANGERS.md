@@ -48,7 +48,7 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Banger:** **Spawning-Spawners** — not just agenome crossover, but **loop-topology crossover.** Different reproductive strategies (agenotype path, crucible path, fusion-only, tournament) compete under the same environment.
 - **Lesson:** Every node is spawn *and* spawner by intent: L1 spawns ideas, L2 spawns L1 configs, L3 spawns L2 runs, L4 spawns L3 instrument rounds. Life flows up (artifacts) and down (pressure + nurture).
 - **Evidence:** Design discussion; maps to capstone "reproduction by Fusion" at agenome *and* output levels — extended to whole loop topologies.
-- **Carry forward:** Serialize spawner genotypes: `{loop topology + judge contracts + reproduction operator + energy budget}`.
+- **Carry forward:** Serialize spawner agenotypes: `{loop topology + judge contracts + reproduction operator + energy budget}`.
 
 ### Explore the madness, cap the combinatorics — 2026-06-16
 
